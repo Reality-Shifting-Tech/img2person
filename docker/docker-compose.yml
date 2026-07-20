@@ -1,0 +1,26 @@
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    environment:
+      API_PORT: "3000"
+      STORAGE_DIR: /data/storage
+      INFERENCE_URL: http://inference:8000
+    volumes:
+      - storage:/data/storage
+    ports:
+      - "3000:3000"
+    depends_on:
+      - inference
+
+  inference:
+    build:
+      context: ../services/inference
+    environment:
+      IMG2PERSON_INFERENCE_MODE: mock
+    ports:
+      - "8000:8000"
+
+volumes:
+  storage:

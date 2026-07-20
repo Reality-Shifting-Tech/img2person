@@ -1,0 +1,42 @@
+[project]
+name = "img2person-inference"
+version = "0.1.0"
+description = "img2person inference service: single-photo reconstruction behind an HTTP boundary"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "AGPL-3.0-only" }
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "pillow>=10.4",
+    "numpy>=1.26",
+    "python-multipart>=0.0.9",
+]
+
+[project.scripts]
+img2person-inference = "img2person_inference.server:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/img2person_inference"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "httpx>=0.27",
+    "ruff>=0.9",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

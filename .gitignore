@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.turbo/
+storage/
+*.log
+.DS_Store
+services/inference/.venv/
+services/inference/models/
+__pycache__/

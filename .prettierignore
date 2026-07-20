@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.turbo/
+vendor/
+services/
+storage/
+pnpm-lock.yaml
