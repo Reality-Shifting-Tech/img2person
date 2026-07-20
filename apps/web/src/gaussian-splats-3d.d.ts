@@ -6,7 +6,16 @@ declare module "@mkkellogg/gaussian-splats-3d" {
     initialCameraLookAt?: [number, number, number];
   }
 
+  export const SceneFormat: {
+    readonly Splat: 0;
+    readonly KSplat: 1;
+    readonly Ply: 2;
+    readonly Spz: 3;
+  };
+  export type SceneFormatValue = (typeof SceneFormat)[keyof typeof SceneFormat];
+
   export interface SplatSceneOptions {
+    format?: SceneFormatValue;
     showLoadingUI?: boolean;
   }
 

@@ -21,7 +21,7 @@ export function SplatViewer({ url }: SplatViewerProps) {
       initialCameraLookAt: [0, 0.9, 0],
     });
     viewer
-      .addSplatScene(url, { showLoadingUI: true })
+      .addSplatScene(url, { format: GaussianSplats3D.SceneFormat.Ply, showLoadingUI: true })
       .then(() => {
         if (!disposed) {
           viewer.start();
