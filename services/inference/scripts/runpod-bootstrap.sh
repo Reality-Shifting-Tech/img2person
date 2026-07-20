@@ -28,6 +28,9 @@ fi
 cd "$REPO_DIR/services/inference"
 uv sync --locked --no-dev --extra lhm
 
+uv pip install --no-cache pip setuptools wheel
+# chumpy's setup.py imports pip, which build isolation doesn't provide
+uv pip install --no-cache --no-build-isolation "chumpy==0.70"
 uv pip install --no-cache -r "$LHMPP_DIR/requirements.txt"
 uv pip install --no-cache spconv-cu121
 uv pip install --no-cache "git+https://github.com/facebookresearch/pytorch3d.git@v0.7.7"

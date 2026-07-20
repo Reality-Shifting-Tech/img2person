@@ -33,7 +33,9 @@ RUN uv sync --locked --no-dev --no-install-project --extra lhm
 # LHM++ third-party deps not covered by the service lock. Pins come from the
 # upstream README (torch 2.3.0 + CUDA 12.1). Some upstream pins target
 # Python 3.10 — resolve build failures here when validating on the GPU host.
-RUN uv pip install --no-cache -r /opt/LHM-plusplus/requirements.txt \
+RUN uv pip install --no-cache pip setuptools wheel \
+    && uv pip install --no-cache --no-build-isolation "chumpy==0.70" \
+    && uv pip install --no-cache -r /opt/LHM-plusplus/requirements.txt \
     && uv pip install --no-cache spconv-cu121 \
     && uv pip install --no-cache "git+https://github.com/facebookresearch/pytorch3d.git@v0.7.7" \
     && uv pip install --no-cache "git+https://github.com/ashawkey/diff-gaussian-rasterization/" \
