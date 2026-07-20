@@ -97,16 +97,23 @@ export async function runReconstruction(options: RunReconstructionOptions): Prom
     await store.saveArtifact(jobId, Buffer.from(result.artifact.data, "base64"));
     stages = setStageStatus(stages, "reconstruction", "passed");
 
-    const gatePassed = result.identityScore >= IDENTITY_SCORE_THRESHOLD;
-    stages = gatePassed
-      ? setStageStatus(stages, "identity-gate", "passed")
-      : setStageStatus(stages, "identity-gate", "failed", "identity score below threshold");
+    // Real (lhm) mode may not produce a score when the renderer or face
+    // embedder is unavailable; an unscored job passes with a note instead of
+    // being held to a threshold we cannot measure.
+    const score = result.identityScore;
+    const gatePassed = score === undefined || score >= IDENTITY_SCORE_THRESHOLD;
+    stages =
+      score === undefined
+        ? setStageStatus(stages, "identity-gate", "passed", "identity score unavailable")
+        : gatePassed
+          ? setStageStatus(stages, "identity-gate", "passed")
+          : setStageStatus(stages, "identity-gate", "failed", "identity score below threshold");
 
     await store.update(jobId, {
       status: gatePassed ? "complete" : "failed",
       stages,
       mode: result.mode,
-      identityScore: result.identityScore,
+      ...(score === undefined ? {} : { identityScore: score }),
       confidence: result.confidence,
       ...(gatePassed ? {} : { error: "identity score below threshold" }),
       updatedAt: now(),

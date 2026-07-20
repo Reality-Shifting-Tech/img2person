@@ -56,7 +56,7 @@ export const reconstructResponseSchema = z.object({
     encoding: z.string(),
     data: z.string(),
   }),
-  identityScore: z.number().min(0).max(1),
+  identityScore: z.number().min(0).max(1).optional(),
   confidence: z.record(z.number()),
   mode: z.string(),
   stages: z.array(

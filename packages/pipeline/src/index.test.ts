@@ -75,6 +75,12 @@ function response(identityScore: number): ReconstructResponse {
   };
 }
 
+function unscoredResponse(): ReconstructResponse {
+  const base = response(0.9);
+  delete base.identityScore;
+  return base;
+}
+
 async function seedJob(store: JobStore, id = "av_test"): Promise<void> {
   const timestamp = new Date().toISOString();
   await store.create({
@@ -199,6 +205,23 @@ describe("runReconstruction", () => {
       detail: "identity score below threshold",
     });
     expect(await store.artifactPath("av_test")).toBeDefined();
+  });
+
+  it("passes the identity gate with a note when no score is produced", async () => {
+    const store = memoryStore();
+    await seedJob(store);
+    const inference = fakeInference(unscoredResponse());
+
+    await runReconstruction({ jobId: "av_test", image, maxUploadBytes: 1024, inference, store });
+
+    const job = await store.get("av_test");
+    expect(job?.status).toBe("complete");
+    expect(job?.identityScore).toBeUndefined();
+    expect(job?.stages[2]).toEqual({
+      stage: "identity-gate",
+      status: "passed",
+      detail: "identity score unavailable",
+    });
   });
 
   it("fails the job with the problem detail when inference errors", async () => {
