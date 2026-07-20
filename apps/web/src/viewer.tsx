@@ -34,7 +34,11 @@ export function SplatViewer({ url }: SplatViewerProps) {
       });
     return () => {
       disposed = true;
-      void viewer.dispose();
+      // Upstream dispose() also removes rootElement from document.body, but it
+      // only appended it there when it created the element itself. With a
+      // caller-supplied rootElement that removeChild always throws — after all
+      // real cleanup has run — so the rejection is safe to swallow.
+      void viewer.dispose().catch(() => {});
     };
   }, [url]);
 
