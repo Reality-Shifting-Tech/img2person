@@ -16,6 +16,10 @@ export function SplatViewer({ url }: SplatViewerProps) {
     let disposed = false;
     const viewer = new GaussianSplats3D.Viewer({
       rootElement,
+      // SharedArrayBuffer needs cross-origin isolation, which self-hosted
+      // deployments won't generally have; without it the shared-memory sort
+      // worker hangs silently and the scene never resolves.
+      sharedMemoryForWorkers: false,
       cameraUp: [0, 1, 0],
       initialCameraPosition: [0, 1.2, 3.2],
       initialCameraLookAt: [0, 0.9, 0],

@@ -1,6 +1,7 @@
 declare module "@mkkellogg/gaussian-splats-3d" {
   export interface ViewerOptions {
     rootElement?: HTMLElement;
+    sharedMemoryForWorkers?: boolean;
     cameraUp?: [number, number, number];
     initialCameraPosition?: [number, number, number];
     initialCameraLookAt?: [number, number, number];
