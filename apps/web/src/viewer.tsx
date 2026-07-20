@@ -20,6 +20,9 @@ export function SplatViewer({ url }: SplatViewerProps) {
       // deployments won't generally have; without it the shared-memory sort
       // worker hangs silently and the scene never resolves.
       sharedMemoryForWorkers: false,
+      // The default Gradual reveal fades splats in over hundreds of RAF
+      // frames; a backgrounded or occluded tab freezes it near-invisible.
+      sceneRevealMode: GaussianSplats3D.SceneRevealMode.Instant,
       cameraUp: [0, 1, 0],
       initialCameraPosition: [0, 1.2, 3.2],
       initialCameraLookAt: [0, 0.9, 0],
