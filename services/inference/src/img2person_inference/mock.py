@@ -27,7 +27,7 @@ class ReconstructionError(Exception):
 @dataclass(frozen=True)
 class ReconstructionResult:
     ply_bytes: bytes
-    identity_score: float
+    identity_score: float | None  # None when no real score can be computed (lhm mode)
     confidence: dict[str, float]
     stages: list[dict[str, str]]
 
@@ -138,14 +138,17 @@ def reconstruct(image_bytes: bytes, image: Image.Image) -> ReconstructionResult:
 
 
 def response_payload(result: ReconstructionResult) -> dict[str, Any]:
-    return {
+    payload: dict[str, Any] = {
         "artifact": {
             "format": "ply",
             "encoding": "base64",
             "data": base64.b64encode(result.ply_bytes).decode("ascii"),
         },
-        "identityScore": result.identity_score,
         "confidence": result.confidence,
         "mode": "mock",
         "stages": result.stages,
     }
+    # identityScore is optional in the contract: omitted when no real score exists.
+    if result.identity_score is not None:
+        payload["identityScore"] = result.identity_score
+    return payload

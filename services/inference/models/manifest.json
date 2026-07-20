@@ -1,4 +1,151 @@
 {
-  "$comment": "Checkpoint registry per ADR-0003. Each entry: name, url, sha256, license. Only licenses verified to permit commercial use and redistribution (Apache-2.0, MIT, BSD, CC BY) are eligible; non-commercial or disputed licenses are excluded. No weights ship in this repository.",
-  "checkpoints": []
+  "$comment": "Checkpoint registry per ADR-0003. Each entry: name, dest (dir under models/checkpoints/), license, licenseStatus (verified|disputed), files[] (path, url, sha256). Disputed entries require `download.py <name> --accept-terms <name>`. Verified licenses permit commercial use and redistribution (Apache-2.0, MIT, BSD, CC BY). No weights ship in this repository. NOTE: the exact set of human_model_files LHM++ touches at runtime is not fully verified \u2014 if the renderer requests FLAME/MANO/SMPL files not listed here, fetch the full 3DAIGC/LHMPP-Prior bundle with LHM++'s own scripts/download_pretrained_models.py --prior.",
+  "checkpoints": [
+    {
+      "name": "lhmpp-700m-smplx-free",
+      "description": "LHM++ SMPLX-FREE checkpoint (~5.2 GB), canonical T-pose 3DGS PLY export. Only published on ModelScope; the HuggingFace repos 3DAIGC/LHMPP-700M-SMPLX-FREE and 3DAIGC/LHMPP-700M-PixelShuffle do not exist (verified 2026-07-20).",
+      "dest": "lhmpp-700m-smplx-free",
+      "license": "Apache-2.0",
+      "licenseStatus": "disputed",
+      "dispute": "The ModelScope model card declares Apache License 2.0, but the LHM family carries an unresolved Apache-2.0 (HF tag) vs CC BY-NC (repo model card) conflict \u2014 https://github.com/aigc3d/LHM/issues/175. LHM++ weights inherit this dispute until upstream resolves it. By accepting you confirm your use complies with whichever license applies.",
+      "files": [
+        {
+          "path": "model.safetensors",
+          "url": "https://modelscope.cn/models/Damo_XR_Lab/LHMPP-700M-SMPLX-FREE/resolve/master/model.safetensors",
+          "sha256": "63cfc88d58b7197617f56112431325ea913896cc70c06af985e11d6e1a253973"
+        },
+        {
+          "path": "config.json",
+          "url": "https://modelscope.cn/models/Damo_XR_Lab/LHMPP-700M-SMPLX-FREE/resolve/master/config.json",
+          "sha256": "f215f1208476fcffa8321f99624026076a653c977e3b08201ce6a0c10b5207b7"
+        },
+        {
+          "path": "configuration.json",
+          "url": "https://modelscope.cn/models/Damo_XR_Lab/LHMPP-700M-SMPLX-FREE/resolve/master/configuration.json",
+          "sha256": "b8a80ef57eae01620324d13acaabb12fd3346b7ceb403dd35415df574c69e1bf"
+        }
+      ]
+    },
+    {
+      "name": "birefnet-general",
+      "description": "BiRefNet general matting weights used by LHM++ preprocessing (engine/BiRefNet).",
+      "dest": "pretrained_models",
+      "license": "MIT",
+      "licenseStatus": "verified",
+      "note": "Weights by ZhengPeng7/BiRefNet (MIT, HF license tag); byte-identical mirror in 3DAIGC/LHMPP-Prior. SHA-256 from the HuggingFace API.",
+      "files": [
+        {
+          "path": "BiRefNet-general-epoch_244.pth",
+          "url": "https://huggingface.co/3DAIGC/LHMPP-Prior/resolve/main/BiRefNet-general-epoch_244.pth",
+          "sha256": "11341a6a1c12646627e8d28da025bfec8aad027929d377cbe8fd4759636cc77c"
+        }
+      ]
+    },
+    {
+      "name": "lhmpp-prior-voxel-grid",
+      "description": "Diffused-voxel skinning grids required by the LHM++ renderer (smplx_diffused_voxel).",
+      "dest": "pretrained_models",
+      "license": "unknown",
+      "licenseStatus": "disputed",
+      "dispute": "3DAIGC/LHMPP-Prior declares no license. These voxel grids are precomputed from the SMPL-X body model, which is under the MPI non-commercial research license. By accepting you confirm your use is permitted.",
+      "files": [
+        {
+          "path": "voxel_grid/voxel_192.pth",
+          "url": "https://huggingface.co/3DAIGC/LHMPP-Prior/resolve/main/voxel_grid/voxel_192.pth",
+          "sha256": "b94b46e1ebffe175117b3a1a2970d9551e07ebb08ff7c6649bdd20e8b75b46b6"
+        },
+        {
+          "path": "voxel_grid/cano_1_volume.npz",
+          "url": "https://huggingface.co/3DAIGC/LHMPP-Prior/resolve/main/voxel_grid/cano_1_volume.npz",
+          "sha256": "c392f6a5c8c9ebde25365f2fb8cb8a66ae90e6330eb761ea7f59450cb6ac7bff"
+        },
+        {
+          "path": "voxel_grid/human_prior_constrain.npz",
+          "url": "https://huggingface.co/3DAIGC/LHMPP-Prior/resolve/main/voxel_grid/human_prior_constrain.npz",
+          "sha256": "52a9d4c2a107012a12491f07f1b5d0874c024d35cedef49def992c63927f41ea"
+        }
+      ]
+    },
+    {
+      "name": "lhmpp-prior-dense-sample-points",
+      "description": "Dense body-surface sample points (160k) for LHM++ query points.",
+      "dest": "pretrained_models",
+      "license": "unknown",
+      "licenseStatus": "disputed",
+      "dispute": "3DAIGC/LHMPP-Prior declares no license. These points are sampled from the SMPL-X body surface (MPI non-commercial research license). By accepting you confirm your use is permitted.",
+      "files": [
+        {
+          "path": "dense_sample_points/1_160000.ply",
+          "url": "https://huggingface.co/3DAIGC/LHMPP-Prior/resolve/main/dense_sample_points/1_160000.ply",
+          "sha256": "b07679d85019cc493ed3b42b7711a4430e1d35754e5e93a64d13f2ec08550ec6"
+        }
+      ]
+    },
+    {
+      "name": "smplx-human-model-files",
+      "description": "SMPL-X template files instantiated by the LHM++ renderer even for the SMPLX-FREE checkpoint (core/models/rendering/skinnings/base_skinning.py calls smplx.create for neutral/male/female).",
+      "dest": "pretrained_models",
+      "license": "SMPL-X Model License (non-commercial research)",
+      "licenseStatus": "disputed",
+      "dispute": "SMPL-X weights are licensed by MPI/Meshcapade for non-commercial research only. LHM++ loads them at inference time even with the SMPLX-FREE checkpoint ('SMPLX-FREE' drops the pose estimator, not the SMPL-X template \u2014 verified in base_skinning.py). By accepting you confirm your use of SMPL-X is permitted (e.g. research use, or you hold a commercial license).",
+      "files": [
+        {
+          "path": "human_model_files/smplx/SMPLX_NEUTRAL.npz",
+          "url": "https://huggingface.co/3DAIGC/LHMPP-Prior/resolve/main/human_model_files/smplx/SMPLX_NEUTRAL.npz",
+          "sha256": "376021446ddc86e99acacd795182bbef903e61d33b76b9d8b359c2b0865bd992"
+        },
+        {
+          "path": "human_model_files/smplx/SMPLX_MALE.npz",
+          "url": "https://huggingface.co/3DAIGC/LHMPP-Prior/resolve/main/human_model_files/smplx/SMPLX_MALE.npz",
+          "sha256": "ab318e3f37d2bfaae26abf4e6fab445c2a610e1d63714794d60379cc263bc2a5"
+        },
+        {
+          "path": "human_model_files/smplx/SMPLX_FEMALE.npz",
+          "url": "https://huggingface.co/3DAIGC/LHMPP-Prior/resolve/main/human_model_files/smplx/SMPLX_FEMALE.npz",
+          "sha256": "b2a3686c9d6d218ff6822fba411c607a3c8125a70af340f384ce68bebecabe0e"
+        },
+        {
+          "path": "human_model_files/smplx/SMPL-X__FLAME_vertex_ids.npy",
+          "url": "https://huggingface.co/3DAIGC/LHMPP-Prior/resolve/main/human_model_files/smplx/SMPL-X__FLAME_vertex_ids.npy",
+          "sha256": "7e70cdc3659aae699b9732e8dd4af49106310c69b90dc83d9f73e96dbf871e49"
+        },
+        {
+          "path": "human_model_files/smplx/MANO_SMPLX_vertex_ids.pkl",
+          "url": "https://huggingface.co/3DAIGC/LHMPP-Prior/resolve/main/human_model_files/smplx/MANO_SMPLX_vertex_ids.pkl",
+          "sha256": "e5abe70b6574de25470475091e8008314a5b90127eb48c3e63bfa0adf8c04dcf"
+        },
+        {
+          "path": "human_model_files/smplx/SMPLX_to_J14.pkl",
+          "url": "https://huggingface.co/3DAIGC/LHMPP-Prior/resolve/main/human_model_files/smplx/SMPLX_to_J14.pkl",
+          "sha256": "5df844ddea85b0a400a2e8dbe63d09d19f2b1b7ec0e0e952daeae08f83d82d61"
+        },
+        {
+          "path": "human_model_files/smplx/smplx_flip_correspondences.npz",
+          "url": "https://huggingface.co/3DAIGC/LHMPP-Prior/resolve/main/human_model_files/smplx/smplx_flip_correspondences.npz",
+          "sha256": "0d3b9d42b3388457aa397d4580d207e0fc7e40da94b0d4b15f6a894fa808dedf"
+        },
+        {
+          "path": "human_model_files/smpl_mean_params.npz",
+          "url": "https://huggingface.co/3DAIGC/LHMPP-Prior/resolve/main/human_model_files/smpl_mean_params.npz",
+          "sha256": "6fd6dd687800da946d0a0492383f973b92ec20f166a0b829775882868c35fcdd"
+        }
+      ]
+    },
+    {
+      "name": "insightface-buffalo-l",
+      "description": "InsightFace buffalo_l pack (ArcFace + RetinaFace detector) for the identity score. Extracts to insightface/models/buffalo_l/.",
+      "dest": "insightface/models",
+      "license": "MIT",
+      "licenseStatus": "verified",
+      "note": "sha256 is null: buffalo_l is a GitHub release asset, not on HuggingFace, and InsightFace publishes no signed hash \u2014 no hash could be verified programmatically. License confirmed MIT (github.com/deepinsight/insightface).",
+      "files": [
+        {
+          "path": "buffalo_l.zip",
+          "url": "https://github.com/deepinsight/insightface/releases/download/v0.7/buffalo_l.zip",
+          "sha256": null,
+          "unpack": "zip"
+        }
+      ]
+    }
+  ]
 }

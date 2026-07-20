@@ -54,6 +54,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         if settings.mode == "lhm":
             try:
                 result = lhm.run_lhm(data)
+            except mock.ReconstructionError as exc:
+                return problem(422, "Unprocessable Entity", exc.detail)
             except RuntimeError as exc:
                 return problem(503, "Service Unavailable", str(exc))
             payload = mock.response_payload(result)
