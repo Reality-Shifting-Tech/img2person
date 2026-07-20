@@ -1,0 +1,4 @@
+{
+  "$comment": "Checkpoint registry per ADR-0003. Each entry: name, url, sha256, license. Only licenses verified to permit commercial use and redistribution (Apache-2.0, MIT, BSD, CC BY) are eligible; non-commercial or disputed licenses are excluded. No weights ship in this repository.",
+  "checkpoints": []
+}

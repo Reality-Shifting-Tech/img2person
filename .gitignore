@@ -5,5 +5,5 @@ storage/
 *.log
 .DS_Store
 services/inference/.venv/
-services/inference/models/
+services/inference/models/checkpoints/
 __pycache__/
